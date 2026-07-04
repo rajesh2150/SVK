@@ -1,28 +1,30 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
-import { api } from '../lib/api';
 import type { Category, Product } from '../types';
+import { getDefaultCategories, getDefaultProducts, getStoredCategories, getStoredProducts, saveCategories, saveProducts } from '../lib/sweetStore';
 
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const selectedCategory = searchParams.get('category') || '';
+  const [products, setProducts] = useState<Product[]>(() => getStoredProducts());
+  const [categories, setCategories] = useState<Category[]>(() => getStoredCategories());
 
-  const { data: productsData } = useQuery({ queryKey: ['allProducts'], queryFn: async () => {
-    const response = await api.get('/catalog/products');
-    return response.data.data as Product[];
-  }});
-
-  const { data: categoriesData } = useQuery({ queryKey: ['categoriesForProducts'], queryFn: async () => {
-    const response = await api.get('/catalog/categories');
-    return response.data.data as Category[];
-  }});
-
-  const products = productsData || [];
-  const categories = categoriesData || [];
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!window.localStorage.getItem('svk-products')) {
+      saveProducts(getDefaultProducts());
+      setProducts(getDefaultProducts());
+    }
+    if (!window.localStorage.getItem('svk-categories')) {
+      saveCategories(getDefaultCategories());
+      setCategories(getDefaultCategories());
+    }
+    setProducts(getStoredProducts());
+    setCategories(getStoredCategories());
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

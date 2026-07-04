@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import palakovaImage from '../assets/palakova.webp';
+import { getProductImageForName, getWeightOptions, getProductPrice } from '../lib/sweetStore';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -13,14 +13,17 @@ const ProductDetailPage = () => {
   const [selectedWeight, setSelectedWeight] = useState('250g');
 
   const { data: productData } = useQuery({ queryKey: ['product', id], queryFn: async () => {
-    const response = await api.get(`/catalog/products/${id}`);
-    return response.data.data as Product;
+    try {
+      const response = await api.get(`/catalog/products/${id}`);
+      return response.data.data as Product;
+    } catch {
+      return undefined;
+    }
   }});
 
   const product = productData;
-  const weightOptions = useMemo(() => product?.weightOptions?.split(',') || ['250g', '500g', '1kg', '2kg'], [product]);
-  const isPalakova = product?.name?.toLowerCase().includes('palakova');
-  const imageSrc = 'https://mirchi.com/os/cdn/content/images/palakova%20athithigruha%20foods_medium_0711032.webp';
+  const weightOptions = useMemo(() => getWeightOptions(product), [product]);
+  const imageSrc = getProductImageForName(product?.name);
 
   if (!product) return <div className="rounded-3xl bg-white p-8 text-center text-stone-600">Loading product details...</div>;
 
@@ -39,7 +42,7 @@ const ProductDetailPage = () => {
               <Star size={16} className="fill-[#D4AF37] text-[#D4AF37]" /> {product.rating?.toFixed(1) || '4.8'} ({product.reviewCount || 120} reviews)
             </div>
             <div className="mt-6 rounded-2xl bg-stone-50 p-4">
-              <p className="text-4xl font-semibold text-[#8B4513]">₹{product.price}</p>
+                <p className="text-4xl font-semibold text-[#8B4513]">₹{getProductPrice(product, selectedWeight)}</p>
               <p className="mt-2 text-sm text-stone-500">Stock: {product.stock} available</p>
             </div>
           </div>
@@ -50,7 +53,7 @@ const ProductDetailPage = () => {
               <div className="mt-2 flex flex-wrap gap-3">
                 {weightOptions.map((weight) => (
                   <button key={weight} onClick={() => setSelectedWeight(weight.trim())} className={`rounded-full px-4 py-2 text-sm font-semibold ${selectedWeight === weight.trim() ? 'bg-[#8B4513] text-white' : 'bg-stone-100 text-stone-700'}`}>
-                    {weight.trim()}
+                      {weight.trim()} · ₹{getProductPrice(product, weight.trim())}
                   </button>
                 ))}
               </div>
@@ -76,7 +79,7 @@ const ProductDetailPage = () => {
           <h3 className="text-xl font-semibold text-stone-900">Why customers love it</h3>
           <div className="mt-4 space-y-4 text-sm leading-7 text-stone-700">
             <div className="flex gap-3"><Clock3 className="mt-1 text-[#8B4513]" /> Freshly prepared and carefully packed for premium quality.</div>
-            <div className="flex gap-3"><PackageOpen className="mt-1 text-[#8B4513]" /> Available in 250g, 500g, 1kg and 2kg formats.</div>
+            <div className="flex gap-3"><PackageOpen className="mt-1 text-[#8B4513]" /> Available in 250g, 500g and 1kg formats.</div>
             <div className="flex gap-3"><ThermometerSnowflake className="mt-1 text-[#8B4513]" /> Store in a cool dry place for best texture.</div>
             <div className="flex gap-3"><Truck className="mt-1 text-[#8B4513]" /> Fast doorstep delivery across the city.</div>
           </div>

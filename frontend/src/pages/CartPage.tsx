@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { getProductImageForName } from '../lib/sweetStore';
 
 const CartPage = () => {
   const { items, updateQuantity, removeFromCart, subtotal } = useCart();
@@ -15,7 +16,7 @@ const CartPage = () => {
         {items.map((item) => (
           <div key={`${item.id}-${item.selectedWeight}`} className="flex flex-col gap-4 rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <img src={item.imageUrl || 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=900&q=80'} alt={item.name} className="h-24 w-24 rounded-2xl object-cover" />
+              <img src={item.imageUrl || getProductImageForName(item.name) || 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=900&q=80'} alt={item.name} className="h-24 w-24 rounded-2xl object-cover" />
               <div>
                 <h3 className="text-lg font-semibold text-stone-900">{item.name}</h3>
                 <p className="text-sm text-stone-500">Weight: {item.selectedWeight}</p>
@@ -24,11 +25,11 @@ const CartPage = () => {
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center rounded-full border border-stone-200">
-                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2"><Minus size={16} /></button>
+                <button onClick={() => updateQuantity(item.cartKey || `${item.id}__${item.selectedWeight || '250g'}`, item.quantity - 1)} className="p-2"><Minus size={16} /></button>
                 <span className="min-w-10 text-center font-semibold">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2"><Plus size={16} /></button>
+                <button onClick={() => updateQuantity(item.cartKey || `${item.id}__${item.selectedWeight || '250g'}`, item.quantity + 1)} className="p-2"><Plus size={16} /></button>
               </div>
-              <button onClick={() => removeFromCart(item.id)} className="rounded-full p-2 text-red-500 hover:bg-red-50"><Trash2 size={18} /></button>
+              <button onClick={() => removeFromCart(item.cartKey || `${item.id}__${item.selectedWeight || '250g'}`)} className="rounded-full p-2 text-red-500 hover:bg-red-50"><Trash2 size={18} /></button>
             </div>
           </div>
         ))}
