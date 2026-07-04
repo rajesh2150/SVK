@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import palakovaImage from '../assets/palakova.webp';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -18,6 +19,8 @@ const ProductDetailPage = () => {
 
   const product = productData;
   const weightOptions = useMemo(() => product?.weightOptions?.split(',') || ['250g', '500g', '1kg', '2kg'], [product]);
+  const isPalakova = product?.name?.toLowerCase().includes('palakova');
+  const imageSrc = 'https://mirchi.com/os/cdn/content/images/palakova%20athithigruha%20foods_medium_0711032.webp';
 
   if (!product) return <div className="rounded-3xl bg-white p-8 text-center text-stone-600">Loading product details...</div>;
 
@@ -25,7 +28,7 @@ const ProductDetailPage = () => {
     <div className="space-y-8">
       <div className="grid gap-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm lg:grid-cols-[0.9fr_1.1fr] lg:p-8">
         <div>
-          <img src={product.imageUrl || 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=900&q=80'} alt={product.name} className="h-[420px] w-full rounded-[1.5rem] object-cover" />
+          <img src={imageSrc} alt={product.name} className="h-[420px] w-full rounded-[1.5rem] object-cover" />
         </div>
         <div className="flex flex-col justify-between">
           <div>

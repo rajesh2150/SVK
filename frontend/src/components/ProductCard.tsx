@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Star } from 'lucide-react';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import palakovaImage from '../assets/palakova.webp';
 
 interface ProductCardProps {
   product: Product;
@@ -9,11 +10,13 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const isPalakova = product.name?.toLowerCase().includes('palakova');
+  const imageSrc ='https://mirchi.com/os/cdn/content/images/palakova%20athithigruha%20foods_medium_0711032.webp'
 
   return (
     <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <Link to={`/products/${product.id}`}>
-        <img src={product.imageUrl || 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=900&q=80'} alt={product.name} className="h-56 w-full object-cover" />
+        <img src={imageSrc} alt={product.name} className="h-56 w-full object-cover" />
       </Link>
       <div className="p-5">
         <div className="flex items-center justify-between">
