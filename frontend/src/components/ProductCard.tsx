@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Star } from 'lucide-react';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import palakovaImage from '../assets/palakova.webp';
+import { getProductImageForName, getProductPrice } from '../lib/sweetStore';
 
 interface ProductCardProps {
   product: Product;
@@ -10,8 +10,7 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
-  const isPalakova = product.name?.toLowerCase().includes('palakova');
-  const imageSrc ='https://mirchi.com/os/cdn/content/images/palakova%20athithigruha%20foods_medium_0711032.webp'
+  const imageSrc = getProductImageForName(product.name);
 
   return (
     <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -30,7 +29,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mt-4 flex items-center justify-between">
           <div>
             <p className="text-sm text-stone-500">Starting at</p>
-            <p className="text-2xl font-semibold text-[#8B4513]">₹{product.price}</p>
+            <p className="text-2xl font-semibold text-[#8B4513]">₹{getProductPrice(product, '250g')}</p>
           </div>
           <div className="flex items-center gap-2 text-sm text-stone-500">
             <Star size={16} className="fill-[#D4AF37] text-[#D4AF37]" /> {product.rating?.toFixed(1) || '4.8'}

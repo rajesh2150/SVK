@@ -4,9 +4,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './context/CartContext';
 import { MainLayout } from './layouts/MainLayout';
+import AdminLayout from './layouts/AdminLayout';
 import AboutPage from './pages/AboutPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminLoginPage from './pages/AdminLoginPage';
+import AdminOrderDetailPage from './pages/AdminOrderDetailPage';
+import AdminOrdersPage from './pages/AdminOrdersPage';
+import AdminProductsPage from './pages/AdminProductsPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ContactPage from './pages/ContactPage';
@@ -35,7 +39,16 @@ const router = createBrowserRouter([
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'terms', element: <TermsPage /> },
       { path: 'admin/login', element: <AdminLoginPage /> },
-      { path: 'admin', element: <AdminDashboardPage /> },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminDashboardPage /> },
+      { path: 'orders', element: <AdminOrdersPage /> },
+      { path: 'orders/:orderId', element: <AdminOrderDetailPage /> },
+      { path: 'products', element: <AdminProductsPage /> },
     ],
   },
 ]);

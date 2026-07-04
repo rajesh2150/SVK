@@ -21,6 +21,18 @@ body {
   box-sizing: border-box;
 }
 
+a,
+button,
+input,
+textarea,
+select,
+img,
+[role='button'],
+[tabindex],
+svg {
+  cursor: pointer;
+}
+
 a {
   text-decoration: none;
 }

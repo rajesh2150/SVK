@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, getBasicAuthHeader } from '../lib/api';
+import { ADMIN_AUTH_STORAGE_KEY, isAdminCredentialsValid } from '../lib/sweetStore';
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
@@ -8,15 +8,14 @@ const AdminLoginPage = () => {
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      await api.get('/admin/dashboard', { headers: getBasicAuthHeader(username, password) });
-      localStorage.setItem('svk-admin-auth', JSON.stringify({ username, password }));
+    if (isAdminCredentialsValid(username, password)) {
+      localStorage.setItem(ADMIN_AUTH_STORAGE_KEY, JSON.stringify({ username, password }));
       navigate('/admin');
-    } catch {
-      setError('Invalid admin credentials');
+      return;
     }
+    setError('Invalid admin credentials');
   };
 
   return (
