@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -z "$MAVEN_HOME" ]; then
+  if [ -d "$HOME/.m2/wrapper/dists" ]; then
+    echo "Using Maven wrapper..."
+  fi
+fi
+
+DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+CLASSPATH="$DIR/.mvn/wrapper/maven-wrapper.jar"
+
+if [ ! -f "$CLASSPATH" ]; then
+  echo "Maven wrapper JAR not found. Please run './mvnw -N wrapper:wrapper' or download it manually." >&2
+  exit 1
+fi
+
+exec java -classpath "$CLASSPATH" org.apache.maven.wrapper.MavenWrapperMain "$@"
