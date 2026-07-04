@@ -40,7 +40,7 @@ const CheckoutPage = () => {
     if (values.paymentMethod === 'RAZORPAY') {
       (async () => {
         try {
-          const resp = await fetch(`${window.location.origin.replace(/:\d+$/, '') || ''}:4000/api/create-order`, {
+          const resp = await fetch('/api/create-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: Math.round(subtotal * 100), currency: 'INR', receipt: `rcpt_${Date.now()}` }),
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
             order_id: razorOrder.id,
             handler: async function (response: any) {
               // verify signature server-side
-              const verifyResp = await fetch(`${window.location.origin.replace(/:\d+$/, '') || ''}:4000/api/verify-payment`, {
+              const verifyResp = await fetch('/api/verify-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature }),
